@@ -1,0 +1,17 @@
+type Result = 
+ variant {
+   err: text;
+   ok: nat;
+ };
+type Post = 
+ record {
+   content: text;
+   id: nat;
+   imageUrl: opt text;
+   timestamp: int;
+   title: text;
+ };
+service : {
+  createPost: (text, text, opt text) -> (Result);
+  getPosts: () -> (vec Post) query;
+}
