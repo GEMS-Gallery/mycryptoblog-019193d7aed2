@@ -5,7 +5,7 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Nat,
     'title' : IDL.Text,
     'content' : IDL.Text,
-    'mediaUrl' : IDL.Opt(IDL.Text),
+    'imageUrl' : IDL.Opt(IDL.Text),
     'timestamp' : IDL.Int,
   });
   return IDL.Service({

@@ -12,7 +12,7 @@ actor {
     id: Nat;
     title: Text;
     content: Text;
-    mediaUrl: ?Text;
+    imageUrl: ?Text;
     timestamp: Int;
   };
 
@@ -21,12 +21,12 @@ actor {
   stable var nextId: Nat = 0;
 
   // Create a new post
-  public func createPost(title: Text, content: Text, mediaUrl: ?Text): async Result.Result<Nat, Text> {
+  public func createPost(title: Text, content: Text, imageUrl: ?Text): async Result.Result<Nat, Text> {
     let post: Post = {
       id = nextId;
       title = title;
       content = content;
-      mediaUrl = mediaUrl;
+      imageUrl = imageUrl;
       timestamp = Time.now();
     };
     posts := Array.append(posts, [post]);
@@ -40,8 +40,8 @@ actor {
   };
 
   // Edit an existing post
-  public func editPost(id: Nat, newTitle: Text, newContent: Text, newMediaUrl: ?Text): async Result.Result<(), Text> {
-    let postIndex = Array.indexOf<Post>({ id = id; title = ""; content = ""; mediaUrl = null; timestamp = 0 }, posts, func(a, b) { a.id == b.id });
+  public func editPost(id: Nat, newTitle: Text, newContent: Text, newImageUrl: ?Text): async Result.Result<(), Text> {
+    let postIndex = Array.indexOf<Post>({ id = id; title = ""; content = ""; imageUrl = null; timestamp = 0 }, posts, func(a, b) { a.id == b.id });
     switch (postIndex) {
       case (null) {
         #err("Post not found")
@@ -51,7 +51,7 @@ actor {
           id = id;
           title = newTitle;
           content = newContent;
-          mediaUrl = newMediaUrl;
+          imageUrl = newImageUrl;
           timestamp = Time.now();
         };
         posts := Array.tabulate<Post>(posts.size(), func (i) {
