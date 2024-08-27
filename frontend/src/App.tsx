@@ -81,7 +81,7 @@ function App() {
   return (
     <Container maxWidth="md">
       <Typography variant="h2" component="h1" gutterBottom>
-        Hacker Blog
+        Dominic Williams Unchained
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
