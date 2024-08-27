@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Button, TextField, Card, CardContent, CardMedia, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Container, Typography, Button, TextField, Card, CardContent, CardMedia, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, FormControl, InputLabel, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import { useForm, Controller } from 'react-hook-form';
 import { backend } from 'declarations/backend';
@@ -7,6 +7,15 @@ import { backend } from 'declarations/backend';
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   backgroundColor: theme.palette.background.paper,
+}));
+
+const MediaContainer = styled('div')(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  position: 'relative',
+  width: '100%',
+  height: 0,
+  paddingBottom: '56.25%', // 16:9 aspect ratio
 }));
 
 type PostType = 'standard' | 'video';
@@ -117,26 +126,27 @@ function App() {
   const renderMedia = (post: Post) => {
     if (post.postType === 'standard' && post.imageUrl) {
       return (
-        <CardMedia
-          component="img"
-          height="200"
-          image={post.imageUrl}
-          alt={post.title}
-          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = 'https://via.placeholder.com/200x200?text=Image+Not+Found';
-          }}
-        />
+        <MediaContainer>
+          <CardMedia
+            component="img"
+            image={post.imageUrl}
+            alt={post.title}
+            sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </MediaContainer>
       );
     } else if (post.postType === 'video' && post.videoUrl) {
       return (
-        <CardMedia
-          component="iframe"
-          height="315"
-          src={post.videoUrl}
-          title={post.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        <MediaContainer>
+          <CardMedia
+            component="iframe"
+            src={post.videoUrl}
+            title={post.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+          />
+        </MediaContainer>
       );
     }
     return null;
