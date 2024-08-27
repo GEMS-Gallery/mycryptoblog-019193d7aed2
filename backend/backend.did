@@ -8,16 +8,23 @@ type Result =
    err: text;
    ok;
  };
+type PostType = 
+ variant {
+   standard;
+   video;
+ };
 type Post = 
  record {
    content: text;
    id: nat;
    imageUrl: opt text;
+   postType: PostType;
    timestamp: int;
    title: text;
+   videoUrl: opt text;
  };
 service : {
-  createPost: (text, text, opt text) -> (Result_1);
-  editPost: (nat, text, text, opt text) -> (Result);
+  createPost: (PostType, text, text, opt text, opt text) -> (Result_1);
+  editPost: (nat, PostType, text, text, opt text, opt text) -> (Result);
   getPosts: () -> (vec Post) query;
 }

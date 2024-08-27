@@ -7,26 +7,32 @@ import Int "mo:base/Int";
 import Time "mo:base/Time";
 
 actor {
-  // Define the Post type
+  public type PostType = {
+    #standard;
+    #video;
+  };
+
   public type Post = {
     id: Nat;
+    postType: PostType;
     title: Text;
     content: Text;
     imageUrl: ?Text;
+    videoUrl: ?Text;
     timestamp: Int;
   };
 
-  // Stable variable to store posts
   stable var posts: [Post] = [];
   stable var nextId: Nat = 0;
 
-  // Create a new post
-  public func createPost(title: Text, content: Text, imageUrl: ?Text): async Result.Result<Nat, Text> {
+  public func createPost(postType: PostType, title: Text, content: Text, imageUrl: ?Text, videoUrl: ?Text): async Result.Result<Nat, Text> {
     let post: Post = {
       id = nextId;
+      postType = postType;
       title = title;
       content = content;
       imageUrl = imageUrl;
+      videoUrl = videoUrl;
       timestamp = Time.now();
     };
     posts := Array.append(posts, [post]);
@@ -34,14 +40,12 @@ actor {
     #ok(post.id)
   };
 
-  // Get all posts in reverse chronological order
   public query func getPosts(): async [Post] {
     Array.reverse(posts)
   };
 
-  // Edit an existing post
-  public func editPost(id: Nat, newTitle: Text, newContent: Text, newImageUrl: ?Text): async Result.Result<(), Text> {
-    let postIndex = Array.indexOf<Post>({ id = id; title = ""; content = ""; imageUrl = null; timestamp = 0 }, posts, func(a, b) { a.id == b.id });
+  public func editPost(id: Nat, postType: PostType, newTitle: Text, newContent: Text, newImageUrl: ?Text, newVideoUrl: ?Text): async Result.Result<(), Text> {
+    let postIndex = Array.indexOf<Post>({ id = id; postType = #standard; title = ""; content = ""; imageUrl = null; videoUrl = null; timestamp = 0 }, posts, func(a, b) { a.id == b.id });
     switch (postIndex) {
       case (null) {
         #err("Post not found")
@@ -49,9 +53,11 @@ actor {
       case (?index) {
         let updatedPost: Post = {
           id = id;
+          postType = postType;
           title = newTitle;
           content = newContent;
           imageUrl = newImageUrl;
+          videoUrl = newVideoUrl;
           timestamp = Time.now();
         };
         posts := Array.tabulate<Post>(posts.size(), func (i) {
