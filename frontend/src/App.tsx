@@ -10,7 +10,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const MediaContainer = styled('div')(({ theme }) => ({
-  marginTop: theme.spacing(2),
   marginBottom: theme.spacing(2),
   position: 'relative',
   width: '100%',
@@ -126,14 +125,12 @@ function App() {
   const renderMedia = (post: Post) => {
     if (post.postType === 'standard' && post.imageUrl) {
       return (
-        <MediaContainer>
-          <CardMedia
-            component="img"
-            image={post.imageUrl}
-            alt={post.title}
-            sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        </MediaContainer>
+        <CardMedia
+          component="img"
+          image={post.imageUrl}
+          alt={post.title}
+          sx={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+        />
       );
     } else if (post.postType === 'video' && post.videoUrl) {
       return (
@@ -168,11 +165,11 @@ function App() {
             <Typography variant="h5" component="h2">
               {post.title}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body2" color="textSecondary" gutterBottom>
               {new Date(Number(post.timestamp) / 1000000).toLocaleString()}
             </Typography>
             {renderMedia(post)}
-            <Typography variant="body1" paragraph>
+            <Typography variant="body1" paragraph sx={{ mt: 2 }}>
               {post.content}
             </Typography>
             <Button onClick={() => handleEdit(post)} variant="outlined" color="primary">
