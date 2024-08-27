@@ -114,6 +114,34 @@ function App() {
     reset();
   };
 
+  const renderMedia = (post: Post) => {
+    if (post.postType === 'standard' && post.imageUrl) {
+      return (
+        <CardMedia
+          component="img"
+          height="200"
+          image={post.imageUrl}
+          alt={post.title}
+          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = 'https://via.placeholder.com/200x200?text=Image+Not+Found';
+          }}
+        />
+      );
+    } else if (post.postType === 'video' && post.videoUrl) {
+      return (
+        <CardMedia
+          component="iframe"
+          height="315"
+          src={post.videoUrl}
+          title={post.title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <Container maxWidth="md">
       <Typography variant="h2" component="h1" gutterBottom>
@@ -133,24 +161,7 @@ function App() {
             <Typography variant="body2" color="textSecondary">
               {new Date(Number(post.timestamp) / 1000000).toLocaleString()}
             </Typography>
-            {post.postType === 'standard' && post.imageUrl && (
-              <CardMedia
-                component="img"
-                height="200"
-                image={post.imageUrl}
-                alt={post.title}
-              />
-            )}
-            {post.postType === 'video' && post.videoUrl && (
-              <CardMedia
-                component="iframe"
-                height="315"
-                src={post.videoUrl}
-                title={post.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            )}
+            {renderMedia(post)}
             <Typography variant="body1" paragraph>
               {post.content}
             </Typography>
