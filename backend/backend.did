@@ -1,7 +1,12 @@
-type Result = 
+type Result_1 = 
  variant {
    err: text;
    ok: nat;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok;
  };
 type Post = 
  record {
@@ -12,6 +17,7 @@ type Post =
    title: text;
  };
 service : {
-  createPost: (text, text, opt text) -> (Result);
+  createPost: (text, text, opt text) -> (Result_1);
+  editPost: (nat, text, text, opt text) -> (Result);
   getPosts: () -> (vec Post) query;
 }

@@ -38,4 +38,27 @@ actor {
   public query func getPosts(): async [Post] {
     Array.reverse(posts)
   };
+
+  // Edit an existing post
+  public func editPost(id: Nat, newTitle: Text, newContent: Text, newImageUrl: ?Text): async Result.Result<(), Text> {
+    let postIndex = Array.indexOf<Post>({ id = id; title = ""; content = ""; imageUrl = null; timestamp = 0 }, posts, func(a, b) { a.id == b.id });
+    switch (postIndex) {
+      case (null) {
+        #err("Post not found")
+      };
+      case (?index) {
+        let updatedPost: Post = {
+          id = id;
+          title = newTitle;
+          content = newContent;
+          imageUrl = newImageUrl;
+          timestamp = Time.now();
+        };
+        posts := Array.tabulate<Post>(posts.size(), func (i) {
+          if (i == index) { updatedPost } else { posts[i] }
+        });
+        #ok()
+      };
+    }
+  };
 }
