@@ -6,7 +6,7 @@ export interface Post {
   'id' : bigint,
   'title' : string,
   'content' : string,
-  'imageUrl' : [] | [string],
+  'mediaUrl' : [] | [string],
   'timestamp' : bigint,
 }
 export type Result = { 'ok' : null } |

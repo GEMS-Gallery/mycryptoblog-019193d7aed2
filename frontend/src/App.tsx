@@ -13,15 +13,33 @@ type Post = {
   id: bigint;
   title: string;
   content: string;
-  imageUrl: string | null;
+  mediaUrl: string | null;
   timestamp: bigint;
 };
 
 type FormData = {
   title: string;
   content: string;
-  imageUrl: string;
+  mediaUrl: string;
 };
+
+function isVideoUrl(url: string): boolean {
+  const videoExtensions = ['.mp4', '.webm', '.ogg'];
+  return videoExtensions.some(ext => url.toLowerCase().endsWith(ext));
+}
+
+function MediaContent({ url }: { url: string }) {
+  if (isVideoUrl(url)) {
+    return (
+      <video width="100%" controls>
+        <source src={url} type={`video/${url.split('.').pop()}`} />
+        Your browser does not support the video tag.
+      </video>
+    );
+  } else {
+    return <CardMedia component="img" height="200" image={url} alt="Media content" />;
+  }
+}
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -45,7 +63,7 @@ function App() {
   const onSubmit = async (data: FormData) => {
     try {
       if (editingPost) {
-        const result = await backend.editPost(editingPost.id, data.title, data.content, data.imageUrl ? [data.imageUrl] : []);
+        const result = await backend.editPost(editingPost.id, data.title, data.content, data.mediaUrl ? [data.mediaUrl] : []);
         if ('ok' in result) {
           console.log('Post edited successfully');
           setEditingPost(null);
@@ -53,7 +71,7 @@ function App() {
           console.error('Error editing post:', result.err);
         }
       } else {
-        const result = await backend.createPost(data.title, data.content, data.imageUrl ? [data.imageUrl] : []);
+        const result = await backend.createPost(data.title, data.content, data.mediaUrl ? [data.mediaUrl] : []);
         if ('ok' in result) {
           console.log('Post created successfully');
           setIsNewPostDialogOpen(false);
@@ -72,7 +90,7 @@ function App() {
     setEditingPost(post);
     setValue('title', post.title);
     setValue('content', post.content);
-    setValue('imageUrl', post.imageUrl || '');
+    setValue('mediaUrl', post.mediaUrl || '');
   };
 
   const handleCloseEdit = () => {
@@ -108,14 +126,7 @@ function App() {
             <Typography variant="body2" color="textSecondary">
               {new Date(Number(post.timestamp) / 1000000).toLocaleString()}
             </Typography>
-            {post.imageUrl && (
-              <CardMedia
-                component="img"
-                height="200"
-                image={post.imageUrl}
-                alt={post.title}
-              />
-            )}
+            {post.mediaUrl && <MediaContent url={post.mediaUrl} />}
             <Typography variant="body1" paragraph>
               {post.content}
             </Typography>
@@ -167,13 +178,13 @@ function App() {
               )}
             />
             <Controller
-              name="imageUrl"
+              name="mediaUrl"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Image URL (optional)"
+                  label="Image or Video URL (optional)"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -233,13 +244,13 @@ function App() {
               )}
             />
             <Controller
-              name="imageUrl"
+              name="mediaUrl"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Image URL (optional)"
+                  label="Image or Video URL (optional)"
                   variant="outlined"
                   fullWidth
                   margin="normal"

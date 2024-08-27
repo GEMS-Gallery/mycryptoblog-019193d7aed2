@@ -12,7 +12,7 @@ type Post =
  record {
    content: text;
    id: nat;
-   imageUrl: opt text;
+   mediaUrl: opt text;
    timestamp: int;
    title: text;
  };
